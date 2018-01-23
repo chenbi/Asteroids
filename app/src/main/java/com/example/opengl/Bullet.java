@@ -5,10 +5,10 @@ import android.graphics.PointF;
 /**
  * Created by chen.
  */
-public class Bullet extends GameObject
+public class Bullet extends MovingObject
 {
     private boolean inFlight = false;
-    CollisionPackage cp;
+    Boundaries boundaries;
 
     public Bullet(float shipX,float shipY)
     {
@@ -24,7 +24,7 @@ public class Bullet extends GameObject
         PointF[] points = new PointF[1];
         points[0] = point;
 
-        cp = new CollisionPackage(points,getWorldLocation(),1.0f,getFacingAngle());
+        boundaries= new Boundaries (points,getWorldLocation(),1.0f,getFacingAngle());
     }
 
     public void shoot(float shipFacingAngle)
@@ -62,7 +62,7 @@ public class Bullet extends GameObject
         move(fps);
 
         //update the collision package
-        cp.facingAngle = getFacingAngle();
-        cp.worldLocation = getWorldLocation();
+        boundaries.facingAngle = getFacingAngle();
+        boundaries.worldLocation = getWorldLocation();
     }
 }

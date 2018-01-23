@@ -9,7 +9,8 @@ public class GameManager
     int mapHeight=600;
     private boolean playing = false;
 
-    SpaceShip ship;   //  first game object
+    Player player;   //  first game object
+    UFO ufo;
     Border border;
     Star[] stars;
     int numStars = 200;

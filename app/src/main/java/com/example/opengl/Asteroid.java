@@ -7,10 +7,10 @@ import java.util.Random;
 /**
  * Created by chen.
  */
-public class Asteroid extends GameObject
+public class Asteroid extends MovingObject
 {
     PointF [] points;
-    CollisionPackage cp;
+    Boundaries boundaries;
 
     public Asteroid(int levelNumber,int mapWidth,int mapHeight)
     {
@@ -38,7 +38,7 @@ public class Asteroid extends GameObject
         generatePoints();       // call the parent setVertices , define random asteroid shape
 
         //initialize the collision package
-        cp = new CollisionPackage(points,getWorldLocation(),25,getFacingAngle());
+        boundaries= new Boundaries (points,getWorldLocation(),25,getFacingAngle());
     }
 
     public void update(float fps)
@@ -47,8 +47,8 @@ public class Asteroid extends GameObject
         setyVelocity((float)(getSpeed()*Math.sin(Math.toRadians(getTravellingAngle() + 90))));
         move(fps);
         //update the collision package
-        cp.facingAngle = getFacingAngle();
-        cp.worldLocation = getWorldLocation();
+        boundaries.facingAngle = getFacingAngle();
+        boundaries.worldLocation = getWorldLocation();
     }
 
     public void generatePoints()

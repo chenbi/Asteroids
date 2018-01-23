@@ -20,7 +20,7 @@ import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.orthoM;
 
-public class AsteroidsRenderer implements Renderer
+public class GameBoard implements Renderer
 {
     boolean debugging = true;   // for debug use
 
@@ -39,7 +39,7 @@ public class AsteroidsRenderer implements Renderer
     PointF handyPointF;   // capture various PointF details without creating new objects
     PointF handyPointF2;
 
-    public AsteroidsRenderer(GameManager gameManager,SoundManager soundManager,InputController inputController)
+    public GameBoard (GameManager gameManager, SoundManager soundManager, InputController inputController)
     {
         gm = gameManager;
         sm = soundManager;
@@ -49,7 +49,7 @@ public class AsteroidsRenderer implements Renderer
         handyPointF2 = new PointF();
 
         // debug
-        Log.e("init AsteroidsRenderer:","screenWidth="+gm.screenWidth+",screenHeight="+gm.screenHeight);
+        Log.e("init GameBoard:","screenWidth="+gm.screenWidth+",screenHeight="+gm.screenHeight);
     }
 
     @Override
@@ -72,9 +72,11 @@ public class AsteroidsRenderer implements Renderer
 
     private void createObjects()
     {
-        gm.ship = new SpaceShip(gm.mapWidth/2,gm.mapHeight/2);    // pass in the worldLocation of ship
-        gm.border = new Border(gm.mapWidth,gm.mapHeight);      // pass in as the map size
+        gm.player= new Player (gm.mapWidth/2,gm.mapHeight/2);    // pass in the worldLocation of player
+        gm.border = new Border(gm.screenWidth,gm.screenHeight);      // pass in as the map size
         gm.stars = new Star[gm.numStars];
+        gm.ufo = new UFO (gm.mapWidth,gm.mapHeight);
+        gm.ufo.setActive (false);
 
         for(int i=0;i<gm.numStars;i++)
         {
@@ -83,7 +85,7 @@ public class AsteroidsRenderer implements Renderer
         gm.bullets = new Bullet[gm.numBullets];
         for(int i=0;i<gm.numBullets;i++)
         {
-            gm.bullets[i] = new Bullet(gm.ship.getWorldLocation().x,gm.ship.getWorldLocation().y);
+            gm.bullets[i] = new Bullet(gm.player.getWorldLocation().x,gm.player.getWorldLocation().y);
 
         }
 
@@ -133,7 +135,7 @@ public class AsteroidsRenderer implements Renderer
             {
                 averageFPS /= frameCounter;
                 frameCounter = 0;
-                Log.e("averageFPS:",""+averageFPS+",ship.x="+gm.ship.getWorldLocation().x+",ship.y="+gm.ship.getWorldLocation().y);
+                Log.e("averageFPS:",""+averageFPS+",player.x="+gm.player.getWorldLocation().x+",player.y="+gm.player.getWorldLocation().y);
             }
         }
     }
@@ -144,11 +146,11 @@ public class AsteroidsRenderer implements Renderer
         {
             gm.stars[i].update();
         }
-        gm.ship.update(fps);
+        gm.player.update(fps);
 
         for(int i=0;i<gm.numBullets;i++)
         {
-            gm.bullets[i].update(fps,gm.ship.getWorldLocation());
+            gm.bullets[i].update(fps,gm.player.getWorldLocation());
         }
         //update the asteroids
         for(int i=0;i<gm.numAsteroids;i++)
@@ -158,8 +160,8 @@ public class AsteroidsRenderer implements Renderer
         }
 
         // now all the objects are in their new location, so we start collision detection
-        // check if the ship needs containing in the map
-        if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.ship.cp))
+        // check if the player needs containing in the map
+        if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.player.cp))
         {
             lifeLost();
         }
@@ -168,7 +170,7 @@ public class AsteroidsRenderer implements Renderer
         {
             if(gm.asteroids[i].isActive)
             {
-                if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.asteroids[i].cp))
+                if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.asteroids[i].boundaries))
                 {
                     gm.asteroids[i].bounce();
                     sm.playSound("blip");
@@ -182,29 +184,29 @@ public class AsteroidsRenderer implements Renderer
             if(gm.bullets[i].isInFlight())
             {
                 handyPointF = gm.bullets[i].getWorldLocation();
-                handyPointF2 = gm.ship.getWorldLocation();
+                handyPointF2 = gm.player.getWorldLocation();
                 // if the bullet out of sight
                 if(handyPointF.x > handyPointF2.x + gm.metresToShowX/2)
                 {
-                    gm.bullets[i].resetBullet(gm.ship.getWorldLocation());
+                    gm.bullets[i].resetBullet(gm.player.getWorldLocation());
                 }
                 else if(handyPointF.y > handyPointF2.y + gm.metresToShowY/2)
                 {
-                    gm.bullets[i].resetBullet(gm.ship.getWorldLocation());
+                    gm.bullets[i].resetBullet(gm.player.getWorldLocation());
                 }
                 else if(handyPointF.x < handyPointF2.x - gm.metresToShowX/2)
                 {
-                    gm.bullets[i].resetBullet(gm.ship.getWorldLocation());
+                    gm.bullets[i].resetBullet(gm.player.getWorldLocation());
                 }
                 else if(handyPointF.y < handyPointF2.y - gm.metresToShowY/2)
                 {
-                    gm.bullets[i].resetBullet(gm.ship.getWorldLocation());
+                    gm.bullets[i].resetBullet(gm.player.getWorldLocation());
                 }
 
                 // if the bullet out of the border
-                if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.bullets[i].cp))
+                if(CollisionCheck.contain(gm.mapWidth,gm.mapHeight,gm.bullets[i].boundaries))
                 {
-                    gm.bullets[i].resetBullet(gm.ship.getWorldLocation());
+                    gm.bullets[i].resetBullet(gm.player.getWorldLocation());
                     sm.playSound("ricochet");
                 }
 
@@ -215,21 +217,21 @@ public class AsteroidsRenderer implements Renderer
                     {
                         if(gm.bullets[bulletNum].isInFlight() && gm.asteroids[asteroidNum].isActive())
                         {
-                            if(CollisionCheck.detect(gm.bullets[bulletNum].cp , gm.asteroids[asteroidNum].cp))
+                            if(CollisionCheck.detect(gm.bullets[bulletNum].boundaries, gm.asteroids[asteroidNum].boundaries))
                             {
-                                gm.bullets[bulletNum].resetBullet(gm.ship.getWorldLocation());
+                                gm.bullets[bulletNum].resetBullet(gm.player.getWorldLocation());
                                 destroyAsteroid(asteroidNum);
                             }
                         }
                     }
                 }
 
-                // check collision between asteroids and ship
+                // check collision between asteroids and player
                 for(int asteroidNum =0;asteroidNum<gm.numAsteroids;asteroidNum++)
                 {
                     if(gm.asteroids[asteroidNum].isActive())
                     {
-                        if(CollisionCheck.detect(gm.ship.cp,gm.asteroids[asteroidNum].cp))
+                        if(CollisionCheck.detect(gm.player.cp,gm.asteroids[asteroidNum].boundaries))
                         {
                             destroyAsteroid(asteroidNum);
                             lifeLost();
@@ -242,15 +244,15 @@ public class AsteroidsRenderer implements Renderer
 
     private void draw()
     {
-        handyPointF = gm.ship.getWorldLocation();  // get where is the ship
+        handyPointF = gm.player.getWorldLocation();  // get where is the player
 
         orthoM(viewportMatrix, 0, handyPointF.x - gm.metresToShowX / 2, handyPointF.x + gm.metresToShowX / 2,
                 handyPointF.y - gm.metresToShowY / 2, handyPointF.y+gm.metresToShowY/2,0f,1f);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //draw the ship
-        gm.ship.draw(viewportMatrix);
+        //draw the player
+        gm.player.draw(viewportMatrix);
         //draw the border
         gm.border.draw(viewportMatrix);
         //draw stars
@@ -290,7 +292,7 @@ public class AsteroidsRenderer implements Renderer
 
     public void lifeLost()
     {
-        gm.ship.setWorldLocation(gm.mapWidth/2,gm.mapHeight/2);
+        gm.player.setWorldLocation(gm.mapWidth/2,gm.mapHeight/2);
         sm.playSound("shipexplode");
         gm.numLives -= 1; // deduct a life
         if(gm.numLives==0)

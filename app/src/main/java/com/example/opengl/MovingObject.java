@@ -23,7 +23,7 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 
 import static android.opengl.Matrix.*;
 
-public class GameObject
+public class MovingObject
 {
     boolean isActive;
     public enum Type{SHIP,ASTEROID,BORDER,BULLET,STAR}
@@ -55,7 +55,7 @@ public class GameObject
     private float length;    // how long and wide the object is
     private float width;
 
-    public GameObject()
+    public MovingObject ()
     {
         if(glProgram == -1)
         {

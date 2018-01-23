@@ -70,23 +70,23 @@ public class InputController
                 case MotionEvent.ACTION_DOWN:
                     if(right.contains(x,y))
                     {
-                        gm.ship.setPressingLeft(false);
-                        gm.ship.setPressingRight(true);
+                        gm.player.setTurnLeft (false);
+                        gm.player.setTurnRight (true);
                     }
                     else if(left.contains(x,y))
                     {
-                        gm.ship.setPressingRight(false);
-                        gm.ship.setPressingLeft(true);
+                        gm.player.setTurnRight (false);
+                        gm.player.setTurnLeft (true);
                     }
                     else if(thrust.contains(x,y))
                     {
-                        gm.ship.toggleThrust();
+                        gm.player.toggleThrust();
                     }
                     else if(shoot.contains(x,y))
                     {
-                        if(gm.ship.pullTrigger())
+                        if(gm.player.pullTrigger())
                         {
-                            gm.bullets[currentBullet].shoot(gm.ship.getFacingAngle());
+                            gm.bullets[currentBullet].shoot(gm.player.getFacingAngle());
                             currentBullet=(currentBullet==gm.numBullets)?0:currentBullet+1;
                             sm.playSound("shoot");
                         }
@@ -99,33 +99,33 @@ public class InputController
                 case MotionEvent.ACTION_UP:
                     if(right.contains(x,y))
                     {
-                        gm.ship.setPressingRight(false);
+                        gm.player.setTurnRight (false);
                     }
                     else if(left.contains(x,y))
                     {
-                        gm.ship.setPressingLeft(false);
+                        gm.player.setTurnLeft (false);
                     }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     if(right.contains(x,y))
                     {
-                        gm.ship.setPressingLeft(false);
-                        gm.ship.setPressingRight(true);
+                        gm.player.setTurnLeft (false);
+                        gm.player.setTurnRight (true);
                     }
                     else if(left.contains(x,y))
                     {
-                        gm.ship.setPressingRight(false);
-                        gm.ship.setPressingLeft(true);
+                        gm.player.setTurnRight (false);
+                        gm.player.setTurnLeft (true);
                     }
                     else if(thrust.contains(x,y))
                     {
-                        gm.ship.toggleThrust();
+                        gm.player.toggleThrust();
                     }
                     else if(shoot.contains(x,y))
                     {
-                        if(gm.ship.pullTrigger())
+                        if(gm.player.pullTrigger())
                         {
-                            gm.bullets[currentBullet].shoot(gm.ship.getFacingAngle());
+                            gm.bullets[currentBullet].shoot(gm.player.getFacingAngle());
                             currentBullet=(currentBullet==gm.numBullets)?0:currentBullet+1;
                             sm.playSound("shoot");
                         }
@@ -138,11 +138,11 @@ public class InputController
                 case MotionEvent.ACTION_POINTER_UP:
                     if(right.contains(x,y))
                     {
-                        gm.ship.setPressingRight(false);
+                        gm.player.setTurnRight (false);
                     }
                     else if(left.contains(x,y))
                     {
-                        gm.ship.setPressingLeft(false);
+                        gm.player.setTurnLeft (false);
                     }
                     break;
 

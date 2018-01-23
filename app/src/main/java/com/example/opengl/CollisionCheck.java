@@ -10,8 +10,8 @@ public class CollisionCheck
 {
     private static PointF rotatedPoint = new PointF();
 
-    // check collision between two GameObject
-    public static boolean detect(CollisionPackage cp1,CollisionPackage cp2)
+    // check collision between two MovingObject
+    public static boolean detect(Boundaries cp1, Boundaries cp2)
     {
         boolean collided = false;
 
@@ -75,8 +75,8 @@ public class CollisionCheck
         return collided;
     }
 
-    // check if the GameObject is in the border or not.
-    public static boolean contain(float mapWidth,float mapHeight,CollisionPackage cp)
+    // check if the MovingObject is in the border or not.
+    public static boolean contain(float mapWidth,float mapHeight,Boundaries cp)
     {
         boolean possibleCollision = false;
 
@@ -97,7 +97,7 @@ public class CollisionCheck
             possibleCollision = true;
         }
 
-        if(possibleCollision)   // precise collision for the border and other GameObject
+        if(possibleCollision)   // precise collision for the border and other MovingObject
         {
             double radianAngle = (cp.facingAngle/180)*Math.PI;
             double cosAngle = Math.cos(radianAngle);

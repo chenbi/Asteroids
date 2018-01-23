@@ -3,7 +3,7 @@ package com.example.opengl;
 /**
  * Created by chen.
  */
-public class Border extends GameObject
+public class Border extends MovingObject
 {
     public Border(float mapWidth,float mapHeight)
     {
@@ -14,7 +14,7 @@ public class Border extends GameObject
 
         float w = mapWidth;
         float h = mapHeight;
-//        setSize(w,h);  // seems tht width and length in the GameObject is useless
+//        setSize(w,h);  // seems tht width and length in the MovingObject is useless
 
         float[] borderVertices = new float[]{
                 -w/2,-h/2,0,

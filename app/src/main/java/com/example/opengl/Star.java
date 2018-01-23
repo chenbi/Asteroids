@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Created by chen.
  */
-public class Star extends GameObject
+public class Star extends MovingObject
 {
     Random r;
 

@@ -6,9 +6,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Display;
 
-public class AsteroidsActivity extends Activity
+public class MainActivity extends Activity
 {
-    private GLSurfaceView asteroidsView;
+    private GLSurfaceView customView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -21,23 +21,23 @@ public class AsteroidsActivity extends Activity
         //load the resolution into a point object
         Point resolution = new Point();
         display.getSize(resolution);
-        asteroidsView = new AsteroidsView(this,resolution.x,resolution.y);
+        customView= new CustomView (this,resolution.x,resolution.y);
 
-        setContentView(asteroidsView);
+        setContentView(customView);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        asteroidsView.onPause();
+        customView.onPause();
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        asteroidsView.onResume();
+        customView.onResume();
     }
 
 }

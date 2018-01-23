@@ -5,7 +5,7 @@ import android.graphics.PointF;
 /**
  * Created by chen.
  */
-public class CollisionPackage
+public class Boundaries
 {
     public float facingAngle;  //allow to compute current world coordinate of eache vertex
     public PointF[] vertexList;  // model-space coordinates
@@ -17,7 +17,7 @@ public class CollisionPackage
     public PointF currentPoint = new PointF();  // avoid garbage collector to improve efficiency
     public PointF currentPoint2= new PointF();
 
-    public CollisionPackage(PointF[] vertexList,PointF worldLocation,float radius,float facingAngle)
+    public Boundaries (PointF[] vertexList, PointF worldLocation, float radius, float facingAngle)
     {
         vertexListLength = vertexList.length;
         this.vertexList = new PointF[vertexListLength];

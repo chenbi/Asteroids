@@ -8,13 +8,13 @@ import android.view.MotionEvent;
 /**
  * Created by chen.
  */
-public class AsteroidsView extends GLSurfaceView
+public class CustomView extends GLSurfaceView
 {
     GameManager gm;
     SoundManager sm;
     InputController ic;
 
-    public AsteroidsView(Context context,int screenX,int screenY)
+    public CustomView (Context context, int screenX, int screenY)
     {
         super(context);
         gm = new GameManager(screenX,screenY);
@@ -23,10 +23,10 @@ public class AsteroidsView extends GLSurfaceView
         ic = new InputController(screenX,screenY);
 
         setEGLContextClientVersion(3);  // set to opegl es 2
-        setRenderer(new AsteroidsRenderer(gm,sm,ic));
+        setRenderer(new GameBoard (gm,sm,ic));
 
         // test coordinate
-        Log.e("init AsteroidsView:","screenX="+screenX+",screenY="+screenY);
+        Log.e("init Custom View:","screenX="+screenX+",screenY="+screenY);
     }
 
     @Override
